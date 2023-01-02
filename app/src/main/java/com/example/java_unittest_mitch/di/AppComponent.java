@@ -2,12 +2,9 @@ package com.example.java_unittest_mitch.di;
 
 import android.app.Application;
 
-import androidx.lifecycle.ViewModelStore;
-
 import com.example.java_unittest_mitch.BaseApplication;
 
 import javax.inject.Singleton;
-
 import dagger.BindsInstance;
 import dagger.Component;
 import dagger.android.AndroidInjectionModule;
