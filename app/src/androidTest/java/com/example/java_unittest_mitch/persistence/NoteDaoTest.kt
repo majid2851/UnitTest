@@ -12,14 +12,8 @@ class NoteDaoTest
     fun isInsertFun_insert_note()
     {
         val note=Note("note1","this is my content",TIME1)
-        
-
-
 
     }
-
-
-
     //-----------------------------------------------------------------------------------------
 
 

@@ -1,6 +1,7 @@
 package com.codingwithmitch.unittesting2.util
 
 import android.util.Log
+import com.example.java_unittest_mitch.testNote
 import com.example.java_unittest_mitch.util.DateUtil
 import com.example.java_unittest_mitch.util.DateUtil.*
 import org.junit.Assert
@@ -16,11 +17,13 @@ import kotlin.random.Random
 class DateUtilTest
 {
     private val today="01-2023"
+    private val note= testNote
     /*to be sure that exception of date-format is not going to be created*/
     @Test
     internal fun notThrowException_when_dateFormat_isCorrect()
     {
-        assertDoesNotThrow {
+        assertDoesNotThrow()
+        {
             Assert.assertEquals(today, DateUtil.getCurrentTimeStamp())
         }
     }
