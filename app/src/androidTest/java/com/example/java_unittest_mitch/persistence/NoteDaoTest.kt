@@ -1,28 +1,35 @@
 package com.example.java_unittest_mitch.persistence
 
 import com.example.java_unittest_mitch.models.Note
+import org.junit.Assert
 import org.junit.jupiter.api.Test
 
-class NoteDaoTest
+class NoteDaoTest:NoteDatabaseTest()
 {
     val TIME1="01-2023"
 
-    /*Test if insertNote is doing well or Not*/
+    /*Insert,Read,Delete*/
     @Test
-    fun isInsertFun_insert_note()
+    fun insert_Read_delete_A_NOTE()
     {
-        val note=Note("note1","this is my content",TIME1)
+
 
     }
-    //-----------------------------------------------------------------------------------------
+    /*-----------------------------------------------*/
+    /*Insert,Read,Update,Read,Delete*/
+
+
+
+    /*----------------------------------------------*/
+    /*Insert with null Title,throw Exception*/
 
 
 
 
+    /*----------------------------------------------*/
+    /*Insert,Update with null Title,throw Exception*/
 
 
-
-
-
+    /*----------------------------------------------*/
 
 }
