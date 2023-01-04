@@ -4,9 +4,7 @@ import androidx.room.Room
 import androidx.test.core.app.ApplicationProvider
 import com.example.java_unittest_mitch.testNote
 import org.junit.After
-import org.junit.Assert
 import org.junit.Before
-import org.junit.Test
 
 abstract class NoteDatabaseTest
 {

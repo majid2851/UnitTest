@@ -1,7 +1,7 @@
 package com.codingwithmitch.unittesting2.models
 
 import com.example.java_unittest_mitch.models.Note
-import org.junit.Assert
+import org.junit.jupiter.api.Assertions
 import org.junit.jupiter.api.Test
 
 class NoteTest
@@ -20,9 +20,9 @@ class NoteTest
         //Act
 
         //Assert
-        Assert.assertNotEquals(note1,note2)
-
+        Assertions.assertNotEquals(note1,note2)
     }
+ 
 
     //-----------------------------------------------------
     /*Compare notes with 2 different ids*/
@@ -34,7 +34,7 @@ class NoteTest
         val note2=Note("majid","is working in netherland",TIME_2)
         note2.id=2
 
-        Assert.assertNotEquals(note1,note2)
+        Assertions.assertNotEquals(note1,note2)
 
     }
     //-----------------------------------------------------
@@ -50,7 +50,7 @@ class NoteTest
         val note2=Note("majid","is working in netherland very well",TIME_2)
         note2.id=1
 
-        Assert.assertEquals(note1,note2)
+        Assertions.assertEquals(note1,note2)
     }
 
     //-----------------------------------------------------
@@ -64,7 +64,7 @@ class NoteTest
         val note2=Note("majid","is working in netherland",TIME_2)
         note2.id=1
 
-        Assert.assertEquals(note1,note2)
+        Assertions.assertEquals(note1,note2)
 
     }
 
@@ -77,7 +77,7 @@ class NoteTest
         note1.id=1
         val note2=Note("majid","is working in netherland",TIME_2)
         note2.id=1
-        Assert.assertNotEquals(note1,note2)
+        Assertions.assertNotEquals(note1,note2)
     }
 
     //-----------------------------------------------------
