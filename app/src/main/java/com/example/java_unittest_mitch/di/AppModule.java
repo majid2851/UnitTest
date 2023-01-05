@@ -8,6 +8,7 @@ import androidx.room.Room;
 
 import com.example.java_unittest_mitch.persistence.NoteDao;
 import com.example.java_unittest_mitch.persistence.NoteDatabase;
+import com.example.java_unittest_mitch.repository.NoteRepository;
 
 import javax.inject.Singleton;
 
@@ -31,7 +32,11 @@ public abstract class AppModule
     }
 
 
-
+    @Singleton
+    @Provides
+    static NoteRepository noteRepository(NoteDao noteDao){
+        return new NoteRepository(noteDao);
+    }
 
 
 }
