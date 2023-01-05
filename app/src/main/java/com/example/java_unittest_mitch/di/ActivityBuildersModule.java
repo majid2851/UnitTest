@@ -1,6 +1,6 @@
 package com.example.java_unittest_mitch.di;
 
-import com.example.java_unittest_mitch.ui.NotesListActivity;
+import com.example.java_unittest_mitch.ui.notes_list.NotesListActivity;
 
 import dagger.Module;
 import dagger.android.ContributesAndroidInjector;

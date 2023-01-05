@@ -1,4 +1,4 @@
-package com.example.java_unittest_mitch.ui;
+package com.example.java_unittest_mitch.ui.notes_list;
 
 import androidx.appcompat.app.AppCompatActivity;
 

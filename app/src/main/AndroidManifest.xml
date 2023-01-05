@@ -11,7 +11,7 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.JavaUnitTestmitch">
         <activity
-            android:name=".ui.NotesListActivity"
+            android:name=".ui.notes_list.NotesListActivity"
             android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
