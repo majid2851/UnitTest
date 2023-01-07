@@ -3,8 +3,7 @@ package com.example.java_unittest_mitch.repository
 import com.example.java_unittest_mitch.TIME1
 import com.example.java_unittest_mitch.models.Note
 import com.example.java_unittest_mitch.persistence.NoteDao
-import com.example.java_unittest_mitch.repository.NoteRepository.INSERT_FAILURE
-import com.example.java_unittest_mitch.repository.NoteRepository.INSERT_SUCCESS
+import com.example.java_unittest_mitch.repository.NoteRepository.*
 import com.example.java_unittest_mitch.testNote
 import com.example.java_unittest_mitch.ui.Resource
 import io.reactivex.Single
@@ -73,13 +72,14 @@ class NoteRepositoryTest
     @Test
     fun insertNote_withNullTtitle_throwsException()
     {
-        Assertions.assertThrows(Exception::class.java,{
+       val exception= Assertions.assertThrows(Exception::class.java,{
             val note= Note()
             note.timeStamp= TIME1
             note.content="content"
 
             noteRepository?.insertNote(note)
         })
+        Assertions.assertEquals(NOTE_TITLE_NULL,exception.message)
 
     }
 
