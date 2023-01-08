@@ -124,8 +124,6 @@ class NoteViewModelTest {
      assertEquals(NoteRepository.NOTE_TITLE_NULL,exception.message)
 
     }
-
-
     /*---------------------------------------------*/
 
 
