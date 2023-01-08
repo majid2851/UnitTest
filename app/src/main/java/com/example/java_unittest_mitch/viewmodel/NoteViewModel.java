@@ -32,7 +32,7 @@ public class NoteViewModel extends ViewModel
 
     public LiveData<Resource<Integer>> updateNote(Note note) throws Exception
     {
-
+        
     }
     public void saveNote()
     {
