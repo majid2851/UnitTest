@@ -7,12 +7,14 @@ import com.example.java_unittest_mitch.repository.NoteRepository.INSERT_FAILURE
 import com.example.java_unittest_mitch.repository.NoteRepository.INSERT_SUCCESS
 import com.example.java_unittest_mitch.testNote
 import com.example.java_unittest_mitch.ui.Resource
+import com.example.java_unittest_mitch.util.InstantExcuterExtension
 import com.example.java_unittest_mitch.util.LiveDataTestUtil
 import io.reactivex.internal.operators.single.SingleToFlowable
 import org.junit.jupiter.api.Assertions
 import org.junit.jupiter.api.Assertions.*
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
+import org.junit.jupiter.api.extension.ExtendWith
 import org.junit.jupiter.api.parallel.Resources
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mock
@@ -21,7 +23,9 @@ import org.mockito.Mockito.never
 import org.mockito.Mockito.verify
 import org.mockito.MockitoAnnotations
 
-class NoteViewModelTest {
+@ExtendWith(InstantExcuterExtension::class)
+class NoteViewModelTest
+{
     private var noteViewModel: NoteViewModel? = null
 
     @Mock

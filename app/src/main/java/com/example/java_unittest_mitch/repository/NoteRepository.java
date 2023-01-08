@@ -61,7 +61,6 @@ public class NoteRepository
                     @Override
                     public Integer apply(Throwable throwable) throws Exception
                     {
-                        
                         return -1;
                     }
                 }).map(new Function<Integer, Resource<Integer>>()
@@ -73,6 +72,31 @@ public class NoteRepository
                             return Resource.success(integer,INSERT_SUCCESS);
                         }
                         return Resource.error(null,INSERT_FAILURE);
+                    }
+                }).subscribeOn(Schedulers.io()).toFlowable();
+    }
+
+    public Flowable<Resource<Integer>> updateNote(final Note note) throws Exception
+    {
+        checkTitle(note);
+        return noteDao.updateNote(note)
+                .delaySubscription(timeDelay,timeUnit)
+                .onErrorReturn(new Function<Throwable, Integer>()
+                {
+                    @Override
+                    public Integer apply(Throwable throwable) throws Exception
+                    {
+                        return -1;
+                    }
+                }).map(new Function<Integer, Resource<Integer>>()
+                {
+                    @Override
+                    public Resource<Integer> apply(Integer integer) throws Exception
+                    {
+                        if (integer>0){
+                            return Resource.success(integer,UPDATE_SUCCESS);
+                        }
+                        return Resource.error(null,UPDATE_FAILURE);
                     }
                 }).subscribeOn(Schedulers.io()).toFlowable();
     }
