@@ -70,7 +70,7 @@ class NoteRepositoryTest
     /*------------------------------------------------------------*/
     /*insert note,null title,confirm throws exception*/
     @Test
-    fun insertNote_withNullTtitle_throwsException()
+    fun insertNote_withNullTitle_throwsException()
     {
        val exception= Assertions.assertThrows(Exception::class.java,{
             val note= Note()
@@ -84,7 +84,61 @@ class NoteRepositoryTest
     }
 
     /*---------------------------------------------------------------*/
+    /*updateNote,verify correctMethod is called,confirm observer is trigger,
+    * confirm number of rows updated*/
+    @Test
+    fun insertNote_updateWithAnotherValues_observeUpdatedNote()
+    {
+        val updatedRow=1
+        val returnedData=Single.just(updatedRow)
+        Mockito.`when`(noteDao?.updateNote(any(Note::class.java))).thenReturn(returnedData)
+
+        val returnedValue=noteRepository?.updateNote(testNote)?.blockingFirst()
+
+        verify(noteDao)?.updateNote(any(Note::class.java))
+        verifyNoMoreInteractions(noteDao)
+
+        System.out.println("Returned Value:"+returnedValue?.data.toString())
+        Assertions.assertEquals(Resource.success(1, UPDATE_SUCCESS),returnedValue)
 
 
 
+    }
+    /*------------------------------------------*/
+    /*Update note,failure (-1)*/
+    @Test
+    fun updateNote_withFailure()
+    {
+        val insertedRow=-1L
+        val returnedData=Single.just(insertedRow)
+        Mockito.`when`(noteDao?.insertNote(any(Note::class.java))).thenReturn(returnedData)
+
+        val returnedValue=noteRepository?.insertNote(testNote)?.blockingFirst()
+        verify(noteDao)?.insertNote(any(Note::class.java))
+        verifyNoMoreInteractions(noteDao)
+
+        System.out.println("Returned Value:"+returnedValue?.data.toString())
+        Assertions.assertEquals(Resource.error(null, INSERT_FAILURE),returnedValue)
+    }
+
+    /*-----------------------------------------*/
+
+    /*Update Note,null Title,throw exception*/
+    @Test
+    fun updateNote_withNull_title()
+    {
+        val exception= Assertions.assertThrows(Exception::class.java,{
+            val note= Note()
+            note.timeStamp= TIME1
+            note.content="content"
+
+            noteRepository?.updateNote(note)
+        })
+        Assertions.assertEquals(NOTE_TITLE_NULL,exception.message)
+
+    }
+
+
+
+    /*-------------------------------------------*/
 }
