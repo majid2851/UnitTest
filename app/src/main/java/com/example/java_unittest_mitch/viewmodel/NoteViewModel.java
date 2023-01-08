@@ -25,19 +25,19 @@ public class NoteViewModel extends ViewModel
     {
         this.noteRepository=noteRepository;
     }
-    public LiveData<Resource<Integer>> insertNote(Note note) throws Exception
+    public LiveData<Resource<Integer>> insertNote() throws Exception
     {
         return LiveDataReactiveStreams.fromPublisher(noteRepository.insertNote(liveNote.getValue()));
     }
 
-    public LiveData<Resource<Integer>> updateNote(Note note) throws Exception
-    {
-        
-    }
-    public void saveNote()
-    {
-
-    }
+//    public LiveData<Resource<Integer>> updateNote(Note note) throws Exception
+//    {
+//
+//    }
+//    public void saveNote()
+//    {
+//
+//    }
 
     public LiveData<Note> observeNote()
     {
