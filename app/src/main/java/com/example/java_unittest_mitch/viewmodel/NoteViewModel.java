@@ -43,6 +43,8 @@ public class NoteViewModel extends ViewModel
     {
         return liveNote;
     }
+
+
     public void setNote(Note note) throws Exception
     {
         if (note.getTitle()==null || note.getTitle().equals(""))
