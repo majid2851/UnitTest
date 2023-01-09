@@ -10,6 +10,7 @@ import androidx.lifecycle.ViewModel;
 import com.example.java_unittest_mitch.models.Note;
 import com.example.java_unittest_mitch.repository.NoteRepository;
 import com.example.java_unittest_mitch.ui.Resource;
+import com.example.java_unittest_mitch.ui.note.NoteInsertUpdateHelper;
 import com.example.java_unittest_mitch.util.DateUtil;
 
 import org.reactivestreams.Subscription;
@@ -18,13 +19,12 @@ import javax.inject.Inject;
 
 import io.reactivex.functions.Consumer;
 
-public class NoteViewModel extends ViewModel {
-
+public class NoteViewModel extends ViewModel
+{
     private static final String TAG = "NoteViewModel";
     public static final String NO_CONTENT_ERROR = "Can't save note with no content";
 
     public enum ViewState {VIEW, EDIT}
-
     // inject
     private final NoteRepository noteRepository;
 
@@ -40,24 +40,30 @@ public class NoteViewModel extends ViewModel {
         this.noteRepository = noteRepository;
     }
 
-    public LiveData<Resource<Integer>> insertNote() throws Exception{
+    public LiveData<Resource<Integer>> insertNote() throws Exception
+    {
         return LiveDataReactiveStreams.fromPublisher(
                 noteRepository.insertNote(note.getValue())
-                        .doOnSubscribe(new Consumer<Subscription>() {
+                        .doOnSubscribe(new Consumer<Subscription>()
+                        {
                             @Override
-                            public void accept(Subscription subscription) throws Exception {
+                            public void accept(Subscription subscription) throws Exception
+                            {
                                 insertSubscription = subscription;
                             }
                         })
         );
     }
 
-    public LiveData<Resource<Integer>> updateNote() throws Exception{
+    public LiveData<Resource<Integer>> updateNote() throws Exception
+    {
         return LiveDataReactiveStreams.fromPublisher(
                 noteRepository.updateNote(note.getValue())
-                        .doOnSubscribe(new Consumer<Subscription>() {
+                        .doOnSubscribe(new Consumer<Subscription>()
+                        {
                             @Override
-                            public void accept(Subscription subscription) throws Exception {
+                            public void accept(Subscription subscription) throws Exception
+                            {
                                 updateSubscription = subscription;
                             }
                         })
@@ -80,14 +86,46 @@ public class NoteViewModel extends ViewModel {
         this.isNewNote = isNewNote;
     }
 
-    public LiveData<Resource<Integer>> saveNote() throws Exception{
-
+    public LiveData<Resource<Integer>> saveNote() throws Exception
+    {
         if(!shouldAllowSave()){
             throw new Exception(NO_CONTENT_ERROR);
         }
         cancelPendingTransactions();
 
-        return null;
+        return new NoteInsertUpdateHelper<Integer>()
+        {
+
+            @Override
+            public void setNoteId(int noteId) {
+                isNewNote=false;
+            }
+
+            @Override
+            public LiveData<Resource<Integer>> getAction() throws Exception
+            {
+                if (isNewNote)
+                {
+                    return insertNote();
+                }else {
+                    return updateNote();
+                }
+            }
+
+            @Override
+            public String defineAction()
+            {
+                if (isNewNote)
+                {
+                    return ACTION_INSERT;
+                }else {
+                    return ACTION_UPDATE;
+                }
+            }
+
+            @Override
+            public void onTransactionComplete() {}
+        }.getAsLiveData();
     }
 
     private void cancelPendingTransactions(){
