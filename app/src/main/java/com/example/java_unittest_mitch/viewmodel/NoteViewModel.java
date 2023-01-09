@@ -12,71 +12,123 @@ import com.example.java_unittest_mitch.repository.NoteRepository;
 import com.example.java_unittest_mitch.ui.Resource;
 import com.example.java_unittest_mitch.util.DateUtil;
 
+import org.reactivestreams.Subscription;
+
 import javax.inject.Inject;
 
-public class NoteViewModel extends ViewModel
-{
-    private static final String TAG = "NoteViewModel";
-    private final NoteRepository noteRepository;
-    public enum  ViewState {VIEW,EDIT}
+import io.reactivex.functions.Consumer;
 
-    private MutableLiveData<Note> liveNote=new MutableLiveData<>();
-    private MutableLiveData<ViewState> viewState=new MutableLiveData<>();
+public class NoteViewModel extends ViewModel {
+
+    private static final String TAG = "NoteViewModel";
+    public static final String NO_CONTENT_ERROR = "Can't save note with no content";
+
+    public enum ViewState {VIEW, EDIT}
+
+    // inject
+    private final NoteRepository noteRepository;
+
+    // vars
+    private MutableLiveData<Note> note  = new MutableLiveData<>();
+    private MutableLiveData<ViewState> viewState = new MutableLiveData<>();
     private boolean isNewNote;
+    private Subscription updateSubscription, insertSubscription;
+
 
     @Inject
-    public NoteViewModel(NoteRepository noteRepository)
-    {
-        this.noteRepository=noteRepository;
-    }
-    public LiveData<Resource<Integer>> insertNote() throws Exception
-    {
-        return LiveDataReactiveStreams.fromPublisher(noteRepository.insertNote(liveNote.getValue()));
+    public NoteViewModel(NoteRepository noteRepository) {
+        this.noteRepository = noteRepository;
     }
 
-//    public LiveData<Resource<Integer>> updateNote(Note note) throws Exception
-//    {
-//
-//    }
-//    public void saveNote()
-//    {
-//
-//    }
-
-    public LiveData<Note> observeNote()
-    {
-        return liveNote;
+    public LiveData<Resource<Integer>> insertNote() throws Exception{
+        return LiveDataReactiveStreams.fromPublisher(
+                noteRepository.insertNote(note.getValue())
+                        .doOnSubscribe(new Consumer<Subscription>() {
+                            @Override
+                            public void accept(Subscription subscription) throws Exception {
+                                insertSubscription = subscription;
+                            }
+                        })
+        );
     }
 
-    public LiveData<ViewState> observeViewState()
-    {
+    public LiveData<Resource<Integer>> updateNote() throws Exception{
+        return LiveDataReactiveStreams.fromPublisher(
+                noteRepository.updateNote(note.getValue())
+                        .doOnSubscribe(new Consumer<Subscription>() {
+                            @Override
+                            public void accept(Subscription subscription) throws Exception {
+                                updateSubscription = subscription;
+                            }
+                        })
+        );
+    }
+
+    public LiveData<Note> observeNote(){
+        return note;
+    }
+
+    public LiveData<ViewState> observeViewState(){
         return viewState;
     }
-    public void setViewState(ViewState viewState)
-    {
+
+    public void setViewState(ViewState viewState){
         this.viewState.setValue(viewState);
     }
-    public void setIsNewNote(boolean isNewNote)
-    {
-        this.isNewNote=isNewNote;
+
+    public void setIsNewNote(boolean isNewNote){
+        this.isNewNote = isNewNote;
     }
-    public LiveData<Resource<Integer>> saveNote()
-    {
+
+    public LiveData<Resource<Integer>> saveNote() throws Exception{
+
+        if(!shouldAllowSave()){
+            throw new Exception(NO_CONTENT_ERROR);
+        }
+        cancelPendingTransactions();
+
         return null;
     }
-    public void updateNote(String title, String content) throws Exception
-    {
+
+    private void cancelPendingTransactions(){
+        if(insertSubscription != null){
+            cancelInsertTransaction();
+        }
+        if(updateSubscription != null){
+            cancelUpdateTransaction();
+        }
+    }
+
+    private void cancelUpdateTransaction(){
+        updateSubscription.cancel();
+        updateSubscription = null;
+    }
+
+    private void cancelInsertTransaction(){
+        insertSubscription.cancel();
+        insertSubscription = null;
+    }
+
+    private boolean shouldAllowSave() throws Exception{
+        try{
+            return removeWhiteSpace(note.getValue().getContent()).length() > 0;
+        }catch (NullPointerException e){
+            throw new Exception(NO_CONTENT_ERROR);
+        }
+    }
+
+    public void updateNote(String title, String content) throws Exception{
         if(title == null || title.equals("")){
             throw new NullPointerException("Title can't be null");
         }
         String temp = removeWhiteSpace(content);
         if(temp.length() > 0){
-            Note updatedNote = new Note(liveNote.getValue());
+            Note updatedNote = new Note(note.getValue());
             updatedNote.setTitle(title);
             updatedNote.setContent(content);
             updatedNote.setTimeStamp(DateUtil.getCurrentTimeStamp());
 
-            liveNote.setValue(updatedNote);
+            note.setValue(updatedNote);
         }
     }
 
@@ -86,34 +138,21 @@ public class NoteViewModel extends ViewModel
         return string;
     }
 
-
-    public void setNote(Note note) throws Exception
-    {
-        if (note.getTitle()==null || note.getTitle().equals(""))
-        {
+    public void setNote(Note note) throws Exception{
+        if(note.getTitle() == null || note.getTitle().equals("")){
             throw new Exception(NOTE_TITLE_NULL);
         }
-       liveNote.setValue(note);
+        this.note.setValue(note);
     }
-    public boolean shouldNavigationBack()
-    {
-        if (viewState.getValue()==ViewState.VIEW)
-        {
+
+    public boolean shouldNavigateBack(){
+        if(viewState.getValue() == ViewState.VIEW){
             return true;
-        }else {
+        }
+        else{
             return false;
         }
     }
 
-
-
-
-
-
-
-
-
-
-
-
 }
+
